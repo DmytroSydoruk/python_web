@@ -18,7 +18,7 @@ async def lifespan(app):
     yield
 
 
-app = FastAPI(title="Auth Service", version="1", lifespan=lifespan)
+app = FastAPI(title="Auth Service", version="1", lifespan=lifespan, root_path="/api")
 
 app.add_middleware(
     CORSMiddleware,

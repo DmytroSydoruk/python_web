@@ -10,7 +10,6 @@ from sqlalchemy.ext.declarative import DeclarativeMeta
 
 load_dotenv()
 
-
 class PostgresSettings(BaseModel):
     user: str = os.getenv("POSTGRES_USER")
     password: str = os.getenv("POSTGRES_PASSWORD")
@@ -18,7 +17,6 @@ class PostgresSettings(BaseModel):
     port: int = int(os.getenv("POSTGRES_PORT"))
     database: str = os.getenv("POSTGRES_DB")
     url: str = f"postgresql+asyncpg://{user}:{password}@{host}:{port}/{database}"
-
 
 engine = create_async_engine(PostgresSettings().url)
 SessionLocal = sessionmaker(
