@@ -6,7 +6,7 @@ To run this project within Docker Compose use following command
 docker compose up --build
 ```
 
-To chech logs out usefollowing command
+To chech logs out use following command
 
 ```bash
 docker compose logs -f
