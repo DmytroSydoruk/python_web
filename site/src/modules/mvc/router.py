@@ -1,13 +1,53 @@
-from fastapi import APIRouter, Request
-from fastapi.responses import HTMLResponse
+from fastapi import APIRouter, Request, Depends, Form
+from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.security import OAuth2PasswordRequestForm
 
-from src.modules.mvc.services import LandingService
+from src.common.database import get_postgres
+
+from src.modules.mvc.services import SiteViews
 
 router = APIRouter(prefix="")
 
-landing_service = LandingService()
+site_views = SiteViews()
 
 
 @router.get("/", response_class=HTMLResponse)
-async def home_page(request: Request):
-    return landing_service.get_home_page(request)
+async def home(request: Request):
+    return await site_views.get_home_page(request)
+
+
+@router.get("/login", response_class=HTMLResponse)
+async def login(request: Request):
+    return await site_views.get_login_page(request)
+
+
+@router.post("/login")
+async def login(request: Request, form_data: OAuth2PasswordRequestForm = Depends()):
+    return await site_views.login(request, form_data.username, form_data.password)
+
+
+@router.get("/logout")
+async def logout(request: Request):
+    return await site_views.logout(request)
+
+
+@router.get("/dashboard", response_class=HTMLResponse)
+async def dashboard(request: Request, db=Depends(get_postgres)):
+    return await site_views.get_dashboard(request, db)
+
+
+@router.post("/add-to-cart")
+async def add_to_cart(
+        request: Request,
+        product_id: int = Form(...),
+        quantity: int = Form(...),
+        db=Depends(get_postgres)):
+    return await site_views.add_order(request, db, product_id, quantity)
+
+
+@router.post("/remove-from-cart")
+async def remove_from_cart(
+    request: Request,
+    order_id: int = Form(...),
+    db=Depends(get_postgres)):
+    return await site_views.remove_order(request, db, order_id)
