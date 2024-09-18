@@ -1,6 +1,6 @@
 from uuid import uuid4
 
-from sqlalchemy import Column, String, Integer, Boolean, DateTime
+from sqlalchemy import Column, String, Integer, Boolean
 from sqlalchemy.dialects import postgresql
 
 from src.common.database import Base
