@@ -15,36 +15,20 @@
             <li><a href="#services">Services</a></li>
             <li><a href="#contacts">Contacts</a></li>
             <li><a href="/logout">Logout</a></li>
+            <li>
+                <a href="/cart" class="cart-button">
+                    Cart
+                    <span class="cart-counter">
+                        {{ cart_item_count }}
+                    </span>
+                </a>
+            </li>
         </ul>
     </nav>
     <h1>Welcome, {{ username }}!</h1>
 </header>
 
 <main>
-    <section id="orders">
-        <h2>Your Orders</h2>
-        {% if orders %}
-        <ul class="orders-list">
-            {% for order in orders %}
-            <li>
-                <p>Order #{{ order.id }}</p>
-                <ul>
-                    <li>{{order.product.title}} ${{order.product.price}} x {{order.qty}}</li>
-                </ul>
-                <p><strong>Total: ${{order.product.price*order.qty}}</strong></p>
-            </li>
-            <form action="/remove-from-cart" method="post">
-                <input type="hidden" name="order_id" value="{{ order.id }}">
-                <button type="submit" style="color: red">Decline</button>
-            </form>
-            <hr/>
-            {% endfor %}
-        </ul>
-        {% else %}
-        <p>You have no orders yet. Start shopping now!</p>
-        {% endif %}
-    </section>
-
     <section id="products">
         <h2>Available Products</h2>
         <ul class="products-list">
@@ -60,6 +44,22 @@
             </li>
             {% endfor %}
         </ul>
+    </section>
+    <section id="orders">
+        <h2>Your orders</h2>
+        {% if orders %}
+        <ul class="orders-list">
+            {% for order in orders %}
+            <li>
+                <p>Order #{{ order.id }} <strong>Total: ${{order.total}}</strong></p>
+
+            </li>
+            <hr/>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>Your order history is empty. Start shopping now!</p>
+        {% endif %}
     </section>
 </main>
 

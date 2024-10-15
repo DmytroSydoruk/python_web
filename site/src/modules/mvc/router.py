@@ -4,11 +4,16 @@ from fastapi.security import OAuth2PasswordRequestForm
 
 from src.common.database import get_postgres
 
-from src.modules.mvc.services import SiteViews
+from src.modules.mvc.services import SiteViews, DashboardViews
+
+from src.modules.mvc.cart.router import router as cart_router
 
 router = APIRouter(prefix="")
+router.include_router(cart_router)
 
 site_views = SiteViews()
+
+dashboard_views = DashboardViews()
 
 
 @router.get("/", response_class=HTMLResponse)
@@ -33,7 +38,7 @@ async def logout(request: Request):
 
 @router.get("/dashboard", response_class=HTMLResponse)
 async def dashboard(request: Request, db=Depends(get_postgres)):
-    return await site_views.get_dashboard(request, db)
+    return await dashboard_views.display_dashboard(request, db)
 
 
 @router.post("/add-to-cart")
@@ -42,12 +47,11 @@ async def add_to_cart(
         product_id: int = Form(...),
         quantity: int = Form(...),
         db=Depends(get_postgres)):
-    return await site_views.add_order(request, db, product_id, quantity)
+    return await dashboard_views.add_to_cart(request, db, product_id, quantity)
 
 
 @router.post("/remove-from-cart")
 async def remove_from_cart(
-    request: Request,
-    order_id: int = Form(...),
+    item_id: int = Form(...),
     db=Depends(get_postgres)):
-    return await site_views.remove_order(request, db, order_id)
+    return await dashboard_views.remove_from_cart(db, item_id)
